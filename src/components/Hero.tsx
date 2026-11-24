@@ -34,7 +34,7 @@ export function Hero({ storeStatus, onExploreMenu }: HeroProps) {
             id="hero-heading"
             className="max-w-[600px] text-[clamp(2.7rem,7vw,5.25rem)] font-black leading-[0.94] tracking-[-0.065em] text-white"
           >
-            Seu próximo pedido está aqui
+            Seu Hambúrguer Favorito está Aqui!
           </h1>
 
           <p className="mt-5 max-w-[480px] text-[15px] leading-7 text-[#C7C7C7] sm:text-base">
