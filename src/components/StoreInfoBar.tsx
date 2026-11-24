@@ -14,7 +14,7 @@ interface StoreInfoBarProps {
  */
 export function StoreInfoBar({ storeStatus, onOpenInfo }: StoreInfoBarProps) {
   return (
-    <div id="topo" className="bg-[#0B0B0B]">
+    <div className="bg-[#0B0B0B]">
       <div className="mx-auto max-w-[1040px] px-4 py-1.5">
         <div className="flex flex-col rounded-xl border border-[#262626] bg-[#141414] px-3 py-1 md:flex-row md:items-center md:justify-between md:gap-4 md:py-0.5">
           {/* Status + Horário em linha compacta */}

@@ -27,6 +27,7 @@ import { CustomizationModal } from './components/CustomizationModal';
 import { CartDrawer } from './components/CartDrawer';
 import { MobileCartBar } from './components/MobileCartBar';
 import { Footer } from './components/Footer';
+import { Hero } from './components/Hero';
 
 const CART_STORAGE_KEY = 'uai_burguer_cart_v1';
 const CHECKOUT_STORAGE_KEY = 'uai_burguer_checkout_v1';
@@ -360,6 +361,11 @@ export default function App() {
         cartItemCount={cartItemCount}
         cartBump={cartBump}
         onOpenCart={handleOpenCart}
+      />
+
+      <Hero
+        storeStatus={storeStatus}
+        onExploreMenu={() => scrollToCategory('hamburgueres')}
       />
 
       {/* 2. Faixa compacta de status e ações com rótulos visíveis */}
