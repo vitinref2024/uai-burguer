@@ -19,7 +19,7 @@ export function Footer({ onOpenInfo }: FooterProps) {
               </span>
             </p>
             <p className="mt-0.5 text-[#8A8A8A]">
-              {STORE_CONFIG.address} · Qui a Dom · 19h–22h30
+              {STORE_CONFIG.address} · Qua a Dom · 17h30–00h
             </p>
           </div>
         </div>

@@ -59,20 +59,20 @@ test('catalog integrity: burgers, combos, Monte do Seu Jeito, extras, sauces, si
   assert.equal(byName.get('UAI BURGUER')?.price, 50);
 
   const expectedCombos = [
-    ['Combo Chesse Burger', 55],
-    ['Combo Onions Burger', 56],
-    ['Combo Monster', 56],
+    ['Combo Chesse Burger', 57],
+    ['Combo Onions Burger', 58],
+    ['Combo Monster', 58],
     ['Combo Texas', 48],
-    ['Combo Hollywood', 55],
-    ['Combo Pineapple Burguer', 55],
-    ['Combo Dallas Burguer', 57],
-    ['Combo Uai Burguer', 66],
-    ['Combo Clássico', 52],
+    ['Combo Hollywood', 57],
+    ['Combo Pineapple Burguer', 56],
+    ['Combo Dallas Burguer', 58],
+    ['Combo Uai Burguer', 69],
+    ['Combo Clássico', 54],
     ['Combo Melt Cheadder', 54],
-    ['Combo Morangueti', 55],
-    ['Combo Austin', 51],
+    ['Combo Morangueti', 57],
+    ['Combo Austin', 54],
     ['Combo Smach Burger', 46],
-    ['Combo American Burguer', 57],
+    ['Combo American Burguer', 59],
   ] as const;
   assert.deepEqual(
     COMBOS.map(({ name, price }) => [name, price]),
@@ -128,7 +128,7 @@ test('combos calculate in the cart and include their composition in WhatsApp ord
     observations: '',
   };
 
-  assert.equal(calculateCartSubtotal([cartItem]), 55);
+  assert.equal(calculateCartSubtotal([cartItem]), 57);
   assert.equal(calculateCartItemCount([cartItem]), 1);
 
   const message = buildWhatsAppMessage([cartItem], {
@@ -147,7 +147,7 @@ test('combos calculate in the cart and include their composition in WhatsApp ord
     needsChange: false,
     changeFor: '',
   });
-  assert.ok(message.includes('1x Combo Chesse Burger — R$\u00A055,00'));
+  assert.ok(message.includes('1x Combo Chesse Burger — R$\u00A057,00'));
   assert.ok(combo.description);
   assert.ok(message.includes(combo.description));
 });
@@ -193,34 +193,36 @@ test('pricing calculations: removed ingredients do not reduce price; repeated ex
   assert.equal(calculateCartItemCount([uaiBurguer, batata]), 3);
 });
 
-test('store schedule in America/Sao_Paulo: Thu-Sun 19:00-22:30 open; Mon-Wed and outside hours closed', () => {
+test('store schedule in America/Sao_Paulo: Wed-Sun 17:30-00:00 open; Mon-Tue and outside hours closed', () => {
   // America/Sao_Paulo is UTC-3 (no DST in Brazil since 2019)
-  // Thursday 2026-11-19 19:00 BRT = 2026-11-19T22:00:00Z -> OPEN
-  assert.equal(getStoreStatus(new Date('2026-11-19T22:00:00Z')).isOpen, true);
+  // Wednesday 2026-11-25 19:00 BRT = 2026-11-25T22:00:00Z -> OPEN
+  assert.equal(getStoreStatus(new Date('2026-11-25T22:00:00Z')).isOpen, true);
 
-  // Thursday 2026-11-19 22:30 BRT = 2026-11-20T01:30:00Z -> OPEN (boundary inclusive)
-  assert.equal(getStoreStatus(new Date('2026-11-20T01:30:00Z')).isOpen, true);
+  // Wednesday 2026-11-25 23:59 BRT = 2026-11-26T02:59:00Z -> OPEN (boundary inclusive)
+  assert.equal(getStoreStatus(new Date('2026-11-26T02:59:00Z')).isOpen, true);
 
-  // Thursday 2026-11-19 22:31 BRT = 2026-11-20T01:31:00Z -> CLOSED
-  assert.equal(getStoreStatus(new Date('2026-11-20T01:31:00Z')).isOpen, false);
+  // Thursday 2026-11-26 00:00 BRT = 2026-11-26T03:00:00Z -> CLOSED (novo dia, abre 17h30)
+  const thuMidnight = getStoreStatus(new Date('2026-11-26T03:00:00Z'));
+  assert.equal(thuMidnight.isOpen, false);
+  assert.match(thuMidnight.statusDetail, /hoje às 17h30/i);
 
-  // Thursday 2026-11-19 18:59 BRT = 2026-11-19T21:59:00Z -> CLOSED
-  const thuBefore = getStoreStatus(new Date('2026-11-19T21:59:00Z'));
-  assert.equal(thuBefore.isOpen, false);
-  assert.match(thuBefore.statusDetail, /hoje às 19h/i);
+  // Wednesday 2026-11-25 16:00 BRT = 2026-11-25T19:00:00Z -> CLOSED
+  const wedBefore = getStoreStatus(new Date('2026-11-25T19:00:00Z'));
+  assert.equal(wedBefore.isOpen, false);
+  assert.match(wedBefore.statusDetail, /hoje às 17h30/i);
 
-  // Sunday 2026-11-22 20:15 BRT = 2026-11-22T23:15:00Z -> OPEN
-  assert.equal(getStoreStatus(new Date('2026-11-22T23:15:00Z')).isOpen, true);
+  // Sunday 2026-11-29 20:15 BRT = 2026-11-29T23:15:00Z -> OPEN
+  assert.equal(getStoreStatus(new Date('2026-11-29T23:15:00Z')).isOpen, true);
 
-  // Monday 2026-11-23 20:00 BRT = 2026-11-23T23:00:00Z -> CLOSED, next opening quinta-feira
-  const mon = getStoreStatus(new Date('2026-11-23T23:00:00Z'));
+  // Monday 2026-11-30 20:00 BRT = 2026-11-30T23:00:00Z -> CLOSED, next opening quarta-feira
+  const mon = getStoreStatus(new Date('2026-11-30T23:00:00Z'));
   assert.equal(mon.isOpen, false);
-  assert.match(mon.statusDetail, /quinta-feira/i);
+  assert.match(mon.statusDetail, /quarta-feira/i);
 
-  // Wednesday 2026-11-25 20:00 BRT = 2026-11-25T23:00:00Z -> CLOSED, next opening amanhã (quinta-feira)
-  const wed = getStoreStatus(new Date('2026-11-25T23:00:00Z'));
-  assert.equal(wed.isOpen, false);
-  assert.match(wed.statusDetail, /amanhã \(quinta-feira\)/i);
+  // Tuesday 2026-12-01 20:00 BRT = 2026-12-01T23:00:00Z -> CLOSED, next opening amanhã (quarta-feira)
+  const tue = getStoreStatus(new Date('2026-12-01T23:00:00Z'));
+  assert.equal(tue.isOpen, false);
+  assert.match(tue.statusDetail, /amanhã \(quarta-feira\)/i);
 });
 
 test('checkout validation enforces address only for delivery and change amount for dinheiro', () => {

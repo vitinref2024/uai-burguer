@@ -32,7 +32,7 @@ export function StoreInfoBar({ storeStatus, onOpenInfo }: StoreInfoBarProps) {
                   ·
                 </span>
                 <span className="truncate text-[#B3B3B3]">
-                  Qui a Dom · 19h–22h30
+                  Qua a Dom · 17h30–00h
                 </span>
               </div>
             ) : (
@@ -42,7 +42,7 @@ export function StoreInfoBar({ storeStatus, onOpenInfo }: StoreInfoBarProps) {
                   ·
                 </span>
                 <span className="truncate text-[#B3B3B3]">
-                  {storeStatus.compactClosedLabel || 'Abrimos hoje às 19h'}
+                  {storeStatus.compactClosedLabel || 'Abrimos hoje às 17h30'}
                 </span>
               </div>
             )}

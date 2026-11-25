@@ -65,7 +65,7 @@ export function getSaoPauloClock(now: Date = new Date()): {
 
 /**
  * Verifica automaticamente se a UAI BURGUER está aberta no horário de Brasília (America/Sao_Paulo).
- * Funcionamento oficial: Quinta a Domingo, das 19h às 22h30. Segunda, terça e quarta: fechado.
+ * Funcionamento oficial: Quarta a Domingo, das 17h30 às 00h. Segunda e terça: fechado.
  */
 export function getStoreStatus(now: Date = new Date()): StoreStatus {
   const { dayIndex, hour, minute, timeFormatted } = getSaoPauloClock(now);
@@ -80,35 +80,39 @@ export function getStoreStatus(now: Date = new Date()): StoreStatus {
     todaySchedule.closeMinute !== undefined
   ) {
     const openMinutes = todaySchedule.openHour * 60 + todaySchedule.openMinute;
-    const closeMinutes = todaySchedule.closeHour * 60 + todaySchedule.closeMinute;
+    // Fechamento à meia-noite (00:00) significa até o fim do mesmo dia (24h)
+    const closeMinutes =
+      todaySchedule.closeHour === 0 && todaySchedule.closeMinute === 0
+        ? 24 * 60
+        : todaySchedule.closeHour * 60 + todaySchedule.closeMinute;
 
-    // Aberto das 19:00 até 22:30 (inclusive)
+    // Aberto das 17h30 até 00h (inclusive)
     if (currentTotalMinutes >= openMinutes && currentTotalMinutes <= closeMinutes) {
       return {
         isOpen: true,
         currentDayIndex: dayIndex,
         currentTimeFormatted: timeFormatted,
         statusHeadline: 'Aberto agora',
-        statusDetail: `Atendimento hoje até às 22h30`,
-        nextOpeningText: 'Pedidos abertos até 22h30.',
+        statusDetail: `Atendimento hoje até às 00h`,
+        nextOpeningText: 'Pedidos abertos até 00h.',
       };
     }
 
-    // É dia de funcionamento, mas ainda antes das 19h
+    // É dia de funcionamento, mas ainda antes das 17h30
     if (currentTotalMinutes < openMinutes) {
       return {
         isOpen: false,
         currentDayIndex: dayIndex,
         currentTimeFormatted: timeFormatted,
         statusHeadline: 'Fechado no momento',
-        statusDetail: 'Abriremos hoje às 19h (atendimento até 22h30).',
-        nextOpeningText: 'Hoje, das 19h às 22h30',
-        compactClosedLabel: 'Abrimos hoje às 19h',
+        statusDetail: 'Abriremos hoje às 17h30 (atendimento até 00h).',
+        nextOpeningText: 'Hoje, das 17h30 às 00h',
+        compactClosedLabel: 'Abrimos hoje às 17h30',
       };
     }
   }
 
-  // Já passou das 22h30 ou é segunda, terça ou quarta: localizar próximo dia aberto
+  // Já passou das 00h ou é segunda ou terça: localizar próximo dia aberto
   for (let offset = 1; offset <= 7; offset++) {
     const nextDayIndex = (dayIndex + offset) % 7;
     const nextSchedule = getScheduleByDayIndex(nextDayIndex);
@@ -124,9 +128,9 @@ export function getStoreStatus(now: Date = new Date()): StoreStatus {
         currentDayIndex: dayIndex,
         currentTimeFormatted: timeFormatted,
         statusHeadline: 'Fechado no momento',
-        statusDetail: `Abriremos ${dayText} às 19h.`,
+        statusDetail: `Abriremos ${dayText} às 17h30.`,
         nextOpeningText: `${nextSchedule.label}, das ${nextSchedule.displayHours}`,
-        compactClosedLabel: `Abrimos ${compactDayText} às 19h`,
+        compactClosedLabel: `Abrimos ${compactDayText} às 17h30`,
       };
     }
   }
@@ -136,8 +140,8 @@ export function getStoreStatus(now: Date = new Date()): StoreStatus {
     currentDayIndex: dayIndex,
     currentTimeFormatted: timeFormatted,
     statusHeadline: 'Fechado no momento',
-    statusDetail: 'Atendimento de quinta a domingo, das 19h às 22h30.',
-    nextOpeningText: 'Quinta a domingo, das 19h às 22h30',
-    compactClosedLabel: 'Abrimos hoje às 19h',
+    statusDetail: 'Atendimento de quarta a domingo, das 17h30 às 00h.',
+    nextOpeningText: 'Quarta a domingo, das 17h30 às 00h',
+    compactClosedLabel: 'Abrimos hoje às 17h30',
   };
 }

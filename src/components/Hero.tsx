@@ -60,7 +60,7 @@ export function Hero({ storeStatus, onExploreMenu }: HeroProps) {
             </div>
             <div className="flex items-center gap-2">
               <Clock3 className="h-4 w-4 text-[#F5B700]" aria-hidden="true" />
-              <span>Qui a Dom · 19h às 22h30</span>
+              <span>Qua a Dom · 17h30 às 00h</span>
             </div>
           </div>
         </div>

@@ -301,7 +301,7 @@ export const CartDrawer = memo(function CartDrawer({
                   Estabelecimento fechado no momento
                 </p>
                 <p className="mt-0.5 text-[#B3B3B3]">
-                  Atendimento de quinta a domingo, das 19h às 22h30. Próximo expediente: {storeStatus.nextOpeningText}. Finalização bloqueada fora do expediente.
+                  Atendimento de quarta a domingo, das 17h30 às 00h. Próximo expediente: {storeStatus.nextOpeningText}. Finalização bloqueada fora do expediente.
                 </p>
               </div>
             </div>
@@ -902,7 +902,7 @@ export const CartDrawer = memo(function CartDrawer({
                     <ExternalLink className="h-4 w-4 text-[#0B0B0B]" aria-hidden="true" />
                   </>
                 ) : (
-                  <span>Fechado · Pedidos liberados de qui a dom (19h–22h30)</span>
+                  <span>Fechado · Pedidos liberados de qua a dom (17h30–00h)</span>
                 )}
               </button>
             </div>
