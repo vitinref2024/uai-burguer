@@ -138,14 +138,24 @@ const COMBO_DESCRIPTION =
   'Acompanha 1 hambúrguer correspondente ao combo, porção de batata frita (~100 g) e Coca-Cola lata de 350 ml.';
 
 const COMBO_CATALOG: [string, string, number, string?][] = [
-  ['combo-chesse-burger', 'Combo Chesse Burger', 57],
+  [
+    'combo-chesse-burger',
+    'Combo Chesse Burger',
+    57,
+    '/assets/aistudio/combo-chesse-burguer.jpeg',
+  ],
   [
     'combo-onions-burger',
     'Combo Onions Burger',
     58,
     '/assets/aistudio/combo-onions-burger.jpeg',
   ],
-  ['combo-monster', 'Combo Monster', 58],
+  [
+    'combo-monster',
+    'Combo Monster',
+    58,
+    '/assets/aistudio/combo-monster.jpeg',
+  ],
   ['combo-texas', 'Combo Texas', 48],
   ['combo-hollywood', 'Combo Hollywood', 57],
   [
@@ -161,7 +171,12 @@ const COMBO_CATALOG: [string, string, number, string?][] = [
     69,
     '/assets/aistudio/combo-uai-burguer.jpeg',
   ],
-  ['combo-classico', 'Combo Clássico', 54],
+  [
+    'combo-classico',
+    'Combo Clássico',
+    54,
+    '/assets/aistudio/combo-classico.jpeg',
+  ],
   [
     'combo-melt-cheddar',
     'Combo Melt Cheadder',
@@ -170,7 +185,12 @@ const COMBO_CATALOG: [string, string, number, string?][] = [
   ],
   ['combo-morangueti', 'Combo Morangueti', 57],
   ['combo-austin', 'Combo Austin', 54],
-  ['combo-smach-burger', 'Combo Smach Burger', 46],
+  [
+    'combo-smach-burger',
+    'Combo Smach Burger',
+    46,
+    '/assets/aistudio/combo-smach-burguer.jpeg',
+  ],
   [
     'combo-american-burguer',
     'Combo American Burguer',

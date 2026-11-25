@@ -414,6 +414,10 @@ test('product images: every linked image exists in public/, has no duplicates, a
     ['combo-pineapple-burguer', '/assets/aistudio/combo-pineapple-burguer.jpeg'],
     ['combo-onions-burger', '/assets/aistudio/combo-onions-burger.jpeg'],
     ['combo-uai-burguer', '/assets/aistudio/combo-uai-burguer.jpeg'],
+    ['combo-chesse-burger', '/assets/aistudio/combo-chesse-burguer.jpeg'],
+    ['combo-monster', '/assets/aistudio/combo-monster.jpeg'],
+    ['combo-classico', '/assets/aistudio/combo-classico.jpeg'],
+    ['combo-smach-burger', '/assets/aistudio/combo-smach-burguer.jpeg'],
     ['coca-cola-lata-350ml', '/assets/aistudio/coca-cola-lata-350ml.jpg'],
     ['coca-cola-zero-lata-350ml', '/assets/aistudio/coca-cola-zero-lata-350ml.jpg'],
     ['coca-cola-2-5l', '/assets/aistudio/coca-cola-2-5l.jpg'],
@@ -453,5 +457,5 @@ test('product images: every linked image exists in public/, has no duplicates, a
     }
   }
 
-  assert.equal(linkedPaths.size, 21);
+  assert.equal(linkedPaths.size, 25);
 });
