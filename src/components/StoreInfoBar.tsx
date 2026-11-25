@@ -32,7 +32,7 @@ export function StoreInfoBar({ storeStatus, onOpenInfo }: StoreInfoBarProps) {
                   ·
                 </span>
                 <span className="truncate text-[#B3B3B3]">
-                  Qua a Dom · 17h30–00h
+                  Todos os dias · 17h30–00h
                 </span>
               </div>
             ) : (

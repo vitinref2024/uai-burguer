@@ -103,16 +103,24 @@ export const STORE_SCHEDULE: StoreScheduleDay[] = [
     dayIndex: 1,
     label: 'Segunda-feira',
     shortLabel: 'Seg',
-    isOpenDay: false,
-    displayHours: 'Fechado',
+    isOpenDay: true,
+    openHour: 17,
+    openMinute: 30,
+    closeHour: 0,
+    closeMinute: 0,
+    displayHours: '17h30 às 00h',
   },
   {
     dayIndex: 2,
     label: 'Terça-feira',
     shortLabel: 'Ter',
-    isOpenDay: false,
-    displayHours: 'Fechado',
-  },
+    isOpenDay: true,
+    openHour: 17,
+    openMinute: 30,
+    closeHour: 0,
+    closeMinute: 0,
+    displayHours: '17h30 às 00h',
+  }
 ];
 
 /**

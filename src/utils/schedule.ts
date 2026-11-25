@@ -65,7 +65,7 @@ export function getSaoPauloClock(now: Date = new Date()): {
 
 /**
  * Verifica automaticamente se a UAI BURGUER está aberta no horário de Brasília (America/Sao_Paulo).
- * Funcionamento oficial: Quarta a Domingo, das 17h30 às 00h. Segunda e terça: fechado.
+ * Funcionamento oficial: todos os dias, das 17h30 às 00h.
  */
 export function getStoreStatus(now: Date = new Date()): StoreStatus {
   const { dayIndex, hour, minute, timeFormatted } = getSaoPauloClock(now);
@@ -112,7 +112,7 @@ export function getStoreStatus(now: Date = new Date()): StoreStatus {
     }
   }
 
-  // Já passou das 00h ou é segunda ou terça: localizar próximo dia aberto
+  // Já passou das 00h: localizar o próximo dia aberto
   for (let offset = 1; offset <= 7; offset++) {
     const nextDayIndex = (dayIndex + offset) % 7;
     const nextSchedule = getScheduleByDayIndex(nextDayIndex);
@@ -140,8 +140,8 @@ export function getStoreStatus(now: Date = new Date()): StoreStatus {
     currentDayIndex: dayIndex,
     currentTimeFormatted: timeFormatted,
     statusHeadline: 'Fechado no momento',
-    statusDetail: 'Atendimento de quarta a domingo, das 17h30 às 00h.',
-    nextOpeningText: 'Quarta a domingo, das 17h30 às 00h',
+    statusDetail: 'Atendimento todos os dias, das 17h30 às 00h.',
+    nextOpeningText: 'Todos os dias, das 17h30 às 00h',
     compactClosedLabel: 'Abrimos hoje às 17h30',
   };
 }
