@@ -164,7 +164,12 @@ const COMBO_CATALOG: [string, string, number, string?][] = [
     58,
     '/assets/aistudio/combo-monster.jpeg',
   ],
-  ['combo-texas', 'Combo Texas', 48],
+  [
+    'combo-texas',
+    'Combo Texas',
+    48,
+    '/assets/aistudio/Combo Texas.jpeg',
+  ],
   ['combo-hollywood', 'Combo Hollywood', 57],
   [
     'combo-pineapple-burguer',
@@ -191,8 +196,18 @@ const COMBO_CATALOG: [string, string, number, string?][] = [
     54,
     '/assets/aistudio/combo-melt-cheddar.jpeg',
   ],
-  ['combo-morangueti', 'Combo Morangueti', 57],
-  ['combo-austin', 'Combo Austin', 54],
+  [
+    'combo-morangueti',
+    'Combo Morangueti',
+    57,
+    '/assets/aistudio/Combo Morangueti.jpeg',
+  ],
+  [
+    'combo-austin',
+    'Combo Austin',
+    54,
+    '/assets/aistudio/Combo Austin.jpeg',
+  ],
   [
     'combo-smach-burger',
     'Combo Smach Burger',

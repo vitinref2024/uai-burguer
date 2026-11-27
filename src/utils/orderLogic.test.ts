@@ -418,6 +418,9 @@ test('product images: every linked image exists in public/, has no duplicates, a
     ['combo-monster', '/assets/aistudio/combo-monster.jpeg'],
     ['combo-classico', '/assets/aistudio/combo-classico.jpeg'],
     ['combo-smach-burger', '/assets/aistudio/combo-smach-burguer.jpeg'],
+    ['combo-texas', '/assets/aistudio/Combo Texas.jpeg'],
+    ['combo-morangueti', '/assets/aistudio/Combo Morangueti.jpeg'],
+    ['combo-austin', '/assets/aistudio/Combo Austin.jpeg'],
     ['coca-cola-lata-350ml', '/assets/aistudio/coca-cola-lata-350ml.jpg'],
     ['coca-cola-zero-lata-350ml', '/assets/aistudio/coca-cola-zero-lata-350ml.jpg'],
     ['coca-cola-2-5l', '/assets/aistudio/coca-cola-2-5l.jpg'],
@@ -457,5 +460,5 @@ test('product images: every linked image exists in public/, has no duplicates, a
     }
   }
 
-  assert.equal(linkedPaths.size, 25);
+  assert.equal(linkedPaths.size, 28);
 });

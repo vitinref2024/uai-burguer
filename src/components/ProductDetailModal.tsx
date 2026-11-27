@@ -6,6 +6,8 @@ import { ProductThumbnail } from './ProductThumbnail';
 
 interface ProductDetailModalProps {
   product: MenuProduct;
+  effectivePrice?: number;
+  isBlackFridayPromo?: boolean;
   onClose: () => void;
   onCustomize: (product: MenuProduct) => void;
   onAdd: (product: MenuProduct) => void;
@@ -18,11 +20,15 @@ interface ProductDetailModalProps {
  */
 export function ProductDetailModal({
   product,
+  effectivePrice,
+  isBlackFridayPromo = false,
   onClose,
   onCustomize,
   onAdd,
 }: ProductDetailModalProps) {
   const isCustomizable = Boolean(product.customizable);
+  const displayPrice = effectivePrice ?? product.price;
+  const hasPromoDiscount = isBlackFridayPromo && displayPrice < product.price;
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -77,6 +83,11 @@ export function ProductDetailModal({
           </div>
 
           <div className="mt-4">
+            {hasPromoDiscount && (
+              <div className="mb-2 inline-flex items-center gap-1.5 rounded-full bg-[#F5B700] px-2.5 py-0.5 text-[10.5px] font-extrabold uppercase tracking-wider text-[#0B0B0B]">
+                <span>BLACK FRIDAY · SOMENTE HOJE!</span>
+              </div>
+            )}
             <div className="flex items-baseline justify-between gap-3">
               <h2
                 id="product-detail-title"
@@ -84,9 +95,16 @@ export function ProductDetailModal({
               >
                 {product.name}
               </h2>
-              <span className="price-num shrink-0 text-[18px] font-bold text-[#F5B700]">
-                {formatBRL(product.price)}
-              </span>
+              <div className="flex shrink-0 items-baseline gap-2">
+                {hasPromoDiscount && (
+                  <span className="price-num text-[14px] font-medium text-[#8A8A8A] line-through">
+                    {formatBRL(product.price)}
+                  </span>
+                )}
+                <span className="price-num text-[18px] font-bold text-[#F5B700]">
+                  {formatBRL(displayPrice)}
+                </span>
+              </div>
             </div>
 
             {product.breadOptions && product.breadOptions.length > 0 && (

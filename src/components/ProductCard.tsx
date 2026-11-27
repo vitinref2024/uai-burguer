@@ -7,6 +7,8 @@ import { ProductThumbnail } from './ProductThumbnail';
 interface ProductCardProps {
   product: MenuProduct;
   quantityInCart: number;
+  effectivePrice?: number;
+  isBlackFridayPromo?: boolean;
   onOpenDetail: (product: MenuProduct) => void;
   onCustomize?: (product: MenuProduct) => void;
   onQuickAdd: (product: MenuProduct) => void;
@@ -22,11 +24,15 @@ interface ProductCardProps {
 export const ProductCard = memo(function ProductCard({
   product,
   quantityInCart,
+  effectivePrice,
+  isBlackFridayPromo = false,
   onOpenDetail,
   onCustomize,
   onQuickAdd,
 }: ProductCardProps) {
   const isCustomizable = Boolean(product.customizable);
+  const displayPrice = effectivePrice ?? product.price;
+  const hasPromoDiscount = isBlackFridayPromo && displayPrice < product.price;
 
   const summaryText =
     product.ingredients.length > 0
@@ -36,7 +42,11 @@ export const ProductCard = memo(function ProductCard({
   return (
     <article
       data-testid={`product-card-${product.id}`}
-      className="flex h-full items-stretch justify-between gap-3 rounded-xl border border-[#262626] bg-[#141414] p-3.5 transition-colors duration-150 hover:border-[#F5B700]/45 sm:gap-4 sm:p-4"
+      className={`flex h-full items-stretch justify-between gap-3 rounded-xl border bg-[#141414] p-3.5 transition-colors duration-150 sm:gap-4 sm:p-4 ${
+        hasPromoDiscount
+          ? 'border-[#F5B700]/55 hover:border-[#F5B700]'
+          : 'border-[#262626] hover:border-[#F5B700]/45'
+      }`}
     >
       {/* Coluna Esquerda: Texto + Preço + Personalizar */}
       <div className="flex min-w-0 flex-1 flex-col justify-between">
@@ -46,10 +56,15 @@ export const ProductCard = memo(function ProductCard({
           aria-label={`Ver detalhes de ${product.name}`}
           className="block w-full text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#F5B700] rounded-md cursor-pointer"
         >
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <h3 className="text-[16px] font-bold leading-snug text-[#FFFFFF]">
               {product.name}
             </h3>
+            {hasPromoDiscount && (
+              <span className="shrink-0 rounded bg-[#F5B700] px-1.5 py-0.5 text-[10px] font-extrabold uppercase tracking-wider text-[#0B0B0B]">
+                Black Friday
+              </span>
+            )}
             {product.featured && (
               <span className="shrink-0 rounded bg-[#F5B700]/15 px-1.5 py-0.5 text-[10.5px] font-semibold text-[#F5B700]">
                 Destaque
@@ -66,12 +81,17 @@ export const ProductCard = memo(function ProductCard({
 
         {/* Preço em destaque amarelo + botão contornado Personalizar */}
         <div className="mt-3 flex flex-wrap items-center gap-2.5">
-          <div className="flex items-baseline gap-1">
+          <div className="flex items-baseline gap-1.5">
             {product.id === 'monte-do-seu-jeito' && (
               <span className="text-[11.5px] text-[#8A8A8A]">A partir de</span>
             )}
+            {hasPromoDiscount && (
+              <span className="price-num text-[12.5px] font-medium text-[#8A8A8A] line-through">
+                {formatBRL(product.price)}
+              </span>
+            )}
             <span className="price-num text-[15.5px] font-bold text-[#F5B700]">
-              {formatBRL(product.price)}
+              {formatBRL(displayPrice)}
             </span>
           </div>
 

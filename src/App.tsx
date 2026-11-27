@@ -17,7 +17,16 @@ import {
   MenuProduct,
 } from './types/menu';
 import { calculateCartItemCount, calculateCartSubtotal } from './utils/pricing';
+import {
+  getBlackFridayComboProducts,
+  getEffectiveProductPrice,
+  getProductPromoInfo,
+  isBlackFridayActive,
+  sortCombosForDisplay,
+  syncCartItemsWithPromotions,
+} from './utils/promotions';
 import { getStoreStatus } from './utils/schedule';
+import { BlackFridaySection } from './components/BlackFridaySection';
 import { Header } from './components/Header';
 import { StoreInfoBar } from './components/StoreInfoBar';
 import { StoreInfoModal } from './components/StoreInfoModal';
@@ -55,7 +64,7 @@ function loadInitialCart(): CartItem[] {
     if (!raw) return [];
     const parsed = JSON.parse(raw);
     if (!Array.isArray(parsed)) return [];
-    return parsed
+    const normalized = parsed
       .filter(
         (item): item is CartItem =>
           Boolean(item) &&
@@ -78,6 +87,7 @@ function loadInitialCart(): CartItem[] {
         sauces: Array.isArray(item.sauces) ? item.sauces : [],
         observations: typeof item.observations === 'string' ? item.observations : '',
       }));
+    return syncCartItemsWithPromotions(normalized);
   } catch {
     return [];
   }
@@ -124,15 +134,22 @@ export default function App() {
   const toastTimerRef = useRef<number | null>(null);
   const bumpTimerRef = useRef<number | null>(null);
 
-  // Verificação automática do horário em America/Sao_Paulo
+  // Verificação automática do horário e vigência da Black Friday em America/Sao_Paulo
   const [storeStatus, setStoreStatus] = useState(() => getStoreStatus());
+  const [isBlackFriday, setIsBlackFriday] = useState(() => isBlackFridayActive());
 
   useEffect(() => {
     const interval = window.setInterval(() => {
-      setStoreStatus(getStoreStatus());
+      const now = new Date();
+      setStoreStatus(getStoreStatus(now));
+      setIsBlackFriday(isBlackFridayActive(now));
     }, 30_000);
     return () => window.clearInterval(interval);
   }, []);
+
+  useEffect(() => {
+    setCartItems((prev) => syncCartItemsWithPromotions(prev));
+  }, [isBlackFriday]);
 
   useEffect(() => {
     return () => {
@@ -277,6 +294,7 @@ export default function App() {
         };
         return next;
       }
+      const effectiveBasePrice = getEffectiveProductPrice(product);
       return [
         ...prev,
         {
@@ -284,7 +302,7 @@ export default function App() {
           productId: product.id,
           name: product.name,
           category: product.category,
-          basePrice: product.price,
+          basePrice: effectiveBasePrice,
           quantity: 1,
           selectedBread: defaultBread,
           selectedDoneness: defaultDoneness,
@@ -333,8 +351,12 @@ export default function App() {
     []
   );
   const availableCombos = useMemo(
-    () => COMBOS.filter((p) => p.available),
-    []
+    () => sortCombosForDisplay(COMBOS.filter((p) => p.available)),
+    [isBlackFriday]
+  );
+  const blackFridayCombos = useMemo(
+    () => (isBlackFriday ? getBlackFridayComboProducts() : []),
+    [isBlackFriday]
   );
   const availableSauces = useMemo(
     () => SAUCE_PRODUCTS.filter((p) => p.available),
@@ -362,6 +384,16 @@ export default function App() {
         cartBump={cartBump}
         onOpenCart={handleOpenCart}
       />
+
+      {isBlackFriday && (
+        <BlackFridaySection
+          combos={blackFridayCombos}
+          productQuantities={productQuantities}
+          onExploreOffers={() => scrollToCategory('combos')}
+          onOpenDetail={setDetailProduct}
+          onQuickAdd={handleQuickAdd}
+        />
+      )}
 
       <Hero
         storeStatus={storeStatus}
@@ -456,15 +488,20 @@ export default function App() {
           </div>
 
           <div className="mt-3.5 grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-4">
-            {availableCombos.map((combo) => (
-              <ProductCard
-                key={combo.id}
-                product={combo}
-                quantityInCart={productQuantities[combo.id] || 0}
-                onOpenDetail={setDetailProduct}
-                onQuickAdd={handleQuickAdd}
-              />
-            ))}
+            {availableCombos.map((combo) => {
+              const promo = getProductPromoInfo(combo);
+              return (
+                <ProductCard
+                  key={combo.id}
+                  product={combo}
+                  quantityInCart={productQuantities[combo.id] || 0}
+                  effectivePrice={promo.currentPrice}
+                  isBlackFridayPromo={promo.isPromo}
+                  onOpenDetail={setDetailProduct}
+                  onQuickAdd={handleQuickAdd}
+                />
+              );
+            })}
           </div>
         </section>
 
@@ -648,21 +685,27 @@ export default function App() {
       />
 
       {/* Janela de detalhes do produto (bottom sheet no celular / modal no computador) */}
-      {detailProduct && (
-        <ProductDetailModal
-          key={detailProduct.id}
-          product={detailProduct}
-          onClose={handleCloseDetail}
-          onCustomize={handleOpenCustomize}
-          onAdd={handleQuickAdd}
-        />
-      )}
+      {detailProduct && (() => {
+        const promo = getProductPromoInfo(detailProduct);
+        return (
+          <ProductDetailModal
+            key={detailProduct.id}
+            product={detailProduct}
+            effectivePrice={promo.currentPrice}
+            isBlackFridayPromo={promo.isPromo}
+            onClose={handleCloseDetail}
+            onCustomize={handleOpenCustomize}
+            onAdd={handleQuickAdd}
+          />
+        );
+      })()}
 
       {/* Modal de Personalização */}
       {customizingProduct && (
         <CustomizationModal
           key={editingCartItem?.cartItemId ?? customizingProduct.id}
           product={customizingProduct}
+          effectiveBasePrice={getEffectiveProductPrice(customizingProduct)}
           editingItem={editingCartItem}
           onClose={handleCloseCustomize}
           onSave={handleSaveCustomizedItem}

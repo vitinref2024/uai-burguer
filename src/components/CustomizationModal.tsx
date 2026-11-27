@@ -12,6 +12,7 @@ import { calculateItemUnitPrice } from '../utils/pricing';
 
 interface CustomizationModalProps {
   product: MenuProduct;
+  effectiveBasePrice?: number;
   /** Quando presente, edita um item existente no carrinho preservando todas as escolhas anteriores. */
   editingItem?: CartItem | null;
   onClose: () => void;
@@ -20,10 +21,12 @@ interface CustomizationModalProps {
 
 export function CustomizationModal({
   product,
+  effectiveBasePrice,
   editingItem,
   onClose,
   onSave,
 }: CustomizationModalProps) {
+  const basePrice = effectiveBasePrice ?? product.price;
   const [imgError, setImgError] = useState(false);
 
   const [selectedBread, setSelectedBread] = useState<string | undefined>(() => {
@@ -123,11 +126,11 @@ export function CustomizationModal({
   const unitPrice = useMemo(
     () =>
       calculateItemUnitPrice({
-        basePrice: product.price,
+        basePrice,
         extras: selectedExtrasList,
         sauces: selectedSaucesList,
       }),
-    [product.price, selectedExtrasList, selectedSaucesList]
+    [basePrice, selectedExtrasList, selectedSaucesList]
   );
 
   const totalPrice = useMemo(
@@ -181,7 +184,7 @@ export function CustomizationModal({
       productId: product.id,
       name: product.name,
       category: product.category,
-      basePrice: product.price,
+      basePrice,
       quantity,
       selectedBread,
       selectedDoneness,
@@ -246,7 +249,7 @@ export function CustomizationModal({
               <div className="flex items-baseline justify-between gap-2">
                 <span className="text-[12px] text-[#8A8A8A]">Preço base</span>
                 <span className="price-num text-[15px] font-bold text-[#F5B700]">
-                  {formatBRL(product.price)}
+                  {formatBRL(basePrice)}
                 </span>
               </div>
               {product.description && (
